@@ -1,10 +1,12 @@
 package io.hhplus.tdd.point.controller;
 
-import io.hhplus.tdd.point.aggregate.entity.PointHistory;
-import io.hhplus.tdd.point.aggregate.entity.UserPoint;
+import io.hhplus.tdd.point.domain.model.entity.PointHistory;
+import io.hhplus.tdd.point.domain.model.entity.UserPoint;
+import io.hhplus.tdd.point.dto.PointChargeReq;
+import io.hhplus.tdd.point.dto.PointUseCommand;
+import io.hhplus.tdd.point.dto.PointUseReq;
 import io.hhplus.tdd.point.service.PointService;
 import io.hhplus.tdd.point.service.PointServiceImpl;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +31,8 @@ public class PointController {
     public UserPoint point(
             @PathVariable long id
     ) {
-        return this.pointService.findUserPointByUserId(id);
+        log.info("point 조회 요청 id : {}", id);
+        return this.pointService.getUserPoint(id);
     }
 
     /**
@@ -39,7 +42,8 @@ public class PointController {
     public List<PointHistory> history(
             @PathVariable long id
     ) {
-        return List.of();
+        log.info("point 충전/이용 내역 조회 요청 id:{}", id);
+        return this.pointService.getUserPointHistory(id);
     }
 
     /**
@@ -47,10 +51,12 @@ public class PointController {
      */
     @PatchMapping("{id}/charge")
     public UserPoint charge(
-            @PathVariable long id,
-            @RequestBody long amount
-    ) {
-        return new UserPoint(0, 0, 0);
+            @PathVariable("id") long id,
+            @RequestBody PointChargeReq request
+            ) {
+        //return new UserPoint(0, 0, 0);
+        return pointService.charge(request.toCommand(id));
+
     }
 
     /**
@@ -59,8 +65,8 @@ public class PointController {
     @PatchMapping("{id}/use")
     public UserPoint use(
             @PathVariable long id,
-            @RequestBody long amount
-    ) {
-        return new UserPoint(0, 0, 0);
+            @RequestBody PointUseReq request
+            ) {
+        return null;
     }
 }

@@ -1,7 +1,11 @@
 package io.hhplus.tdd.point.service;
 
-import io.hhplus.tdd.point.aggregate.entity.PointHistory;
-import io.hhplus.tdd.point.aggregate.entity.UserPoint;
+import io.hhplus.tdd.point.domain.model.entity.PointHistory;
+import io.hhplus.tdd.point.domain.model.entity.UserPoint;
+import io.hhplus.tdd.point.domain.vo.TransactionType;
+import io.hhplus.tdd.point.dto.PointChargeCommand;
+import io.hhplus.tdd.point.dto.PointChargeReq;
+import io.hhplus.tdd.point.dto.PointUseCommand;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +22,34 @@ public class PointServiceImpl implements PointService {
 
 
     @Override
-    public UserPoint findUserPointByUserId(long userId) {
-        return this.userPointRepository.findById(userId);
+    public UserPoint getUserPoint(long userId) {
+        return userPointRepository.findById(userId);
     }
 
     @Override
-    public List<PointHistory> findPointHistoriesByUserId(long userId) {
-        return null;
+    public List<PointHistory> getUserPointHistory(long userId) {
+        // 기존 회원 있는지 조회한다.
+        UserPoint userPoint = UserPoint.findbyId(userId, userPointRepository);
+        // 조회 확인 후 회원의 포인트 히스토리 정보 조회
+        return PointHistory.selectAllByUserId(userPoint.id(), pointHistoryRepository);
     }
 
     @Override
-    synchronized public UserPoint chargeUserPoint(long userId, long amount) {
-        return null;
+    public UserPoint charge(final PointChargeCommand comdto) {
+        final UserPoint userPoint = userPointRepository.findById(comdto.getUserId());
+        final UserPoint chargedPoint = userPoint.charge(comdto.getAmount());
+        userPointRepository.save(chargedPoint);
+        pointHistoryRepository.insert(comdto.getUserId(), comdto.getAmount(), TransactionType.CHARGE, chargedPoint.updateMillis());
+        return chargedPoint;
     }
 
     @Override
-    synchronized public UserPoint useUserPoint(long userId, long amount) {
-        return null;
+    public UserPoint use(PointUseCommand comdto) {
+        final UserPoint userPoint = userPointRepository.findById(comdto.getUserId());
+        final UserPoint usedPoint = userPoint.use(comdto.getAmount());
+        userPointRepository.save(usedPoint);
+        pointHistoryRepository.insert(comdto.getUserId(), comdto.getAmount(), TransactionType.USE, usedPoint.updateMillis());
+        return usedPoint;
     }
+
 }

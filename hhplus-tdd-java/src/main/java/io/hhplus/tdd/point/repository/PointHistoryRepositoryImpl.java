@@ -1,8 +1,8 @@
 package io.hhplus.tdd.point.repository;
 
 import io.hhplus.tdd.database.PointHistoryTable;
-import io.hhplus.tdd.point.aggregate.entity.PointHistory;
-import io.hhplus.tdd.point.aggregate.vo.TransactionType;
+import io.hhplus.tdd.point.domain.model.entity.PointHistory;
+import io.hhplus.tdd.point.domain.vo.TransactionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,12 +14,14 @@ public class PointHistoryRepositoryImpl implements PointHistoryRepository{
     //
     private final PointHistoryTable pointHistoryTable;
 
-    public PointHistory save(long userId, long amount, TransactionType type, long updateMillis) {
+    @Override
+    public PointHistory insert(long userId, long amount, TransactionType type, long updateMillis) {
         //
-        return this.pointHistoryTable.insert(userId, amount, type, updateMillis);
+        return pointHistoryTable.insert(userId, amount, type, updateMillis);
     }
 
-    public List<PointHistory> findById(long userId) {
+    @Override
+    public List<PointHistory> selectAllByUserId(long userId) {
         //
         return this.pointHistoryTable.selectAllByUserId(userId);
     }

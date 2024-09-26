@@ -1,11 +1,11 @@
 package io.hhplus.tdd.point.repository;
 
-import io.hhplus.tdd.point.aggregate.entity.PointHistory;
-import io.hhplus.tdd.point.aggregate.vo.TransactionType;
+import io.hhplus.tdd.point.domain.model.entity.PointHistory;
+import io.hhplus.tdd.point.domain.vo.TransactionType;
 
 import java.util.List;
 
 public interface PointHistoryRepository {
-    PointHistory save(long userId, long amount, TransactionType type, long updateMillis);
-    List<PointHistory> findById(long userId);
+    PointHistory insert(long userId, long amount, TransactionType type, long updateMillis);
+    List<PointHistory> selectAllByUserId(long userId);
 }

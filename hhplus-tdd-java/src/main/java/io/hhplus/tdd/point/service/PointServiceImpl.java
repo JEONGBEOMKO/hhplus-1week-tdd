@@ -50,6 +50,7 @@ public class PointServiceImpl implements PointService {
         userPointRepository.save(usedPoint);
         pointHistoryRepository.insert(comdto.getUserId(), comdto.getAmount(), TransactionType.USE, usedPoint.updateMillis());
         return usedPoint;
+
     }
 
 }

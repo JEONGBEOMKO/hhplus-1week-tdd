@@ -37,7 +37,7 @@ public record UserPoint(
             throw new IllegalArgumentException("최대 잔고를 초과할 수 없습니다.");
         }
 
-        return new UserPoint(this.id, this.point, System.currentTimeMillis());
+        return new UserPoint(this.id, this.point + amount, System.currentTimeMillis());
     }
 
     // 사용자 포인트를 사용한다

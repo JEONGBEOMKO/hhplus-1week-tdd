@@ -23,15 +23,18 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public UserPoint getUserPoint(long userId) {
+        if(userId < 0){
+            throw new IllegalArgumentException("유효하지 않은 아이디 입니다.");
+        }
         return userPointRepository.findById(userId);
     }
 
     @Override
     public List<PointHistory> getUserPointHistory(long userId) {
-        // 기존 회원 있는지 조회한다.
-        UserPoint userPoint = UserPoint.findbyId(userId, userPointRepository);
-        // 조회 확인 후 회원의 포인트 히스토리 정보 조회
-        return PointHistory.selectAllByUserId(userPoint.id(), pointHistoryRepository);
+        if (userId < 0 ){
+            throw new IllegalArgumentException("유효하지 않은 아이디입니다.");
+        }
+        return pointHistoryRepository.selectAllByUserId(userId);
     }
 
     @Override

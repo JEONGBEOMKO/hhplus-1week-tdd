@@ -45,28 +45,33 @@ class PointServiceImplTest {
         long userId = 1L;
         long currentAmount = 1000L;
         UserPoint userPoint = new UserPoint(userId, currentAmount, System.currentTimeMillis());
-
-        //when
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
-        //then
+        //when
         UserPoint result = pointService.getUserPoint(userId);
+        //then
+        assertEquals(userPoint.id(), result.id());
+        assertEquals(userPoint.point(), result.point());
+        verify(userPointRepository, times(1)).findById(userId);
     }
 
     @Test
     @DisplayName("사용자의 포인트 이용내역 조회-성공케이스")
-    //given
+
     void SelectUserPointHistory() {
+        //given
         long currentUserId = 1L;
         long currentAmount = 1000L;
         UserPoint userPoint = new UserPoint(currentUserId, currentAmount, System.currentTimeMillis());
         List<PointHistory> pointHistoryList = new ArrayList<>();
         pointHistoryList.add(new PointHistory(1L, currentUserId, currentAmount, TransactionType.CHARGE, System.currentTimeMillis()));
-    //when
-        when(userPointRepository.findById(eq(currentUserId))).thenReturn(userPoint);
         when(pointHistoryRepository.selectAllByUserId(eq(currentUserId))).thenReturn(pointHistoryList);
 
-    //then
-    List<PointHistory> result = pointService.getUserPointHistory(currentUserId);
+        //when
+        List<PointHistory> result = pointService.getUserPointHistory(currentUserId);
+
+        //then
+        assertEquals(pointHistoryList, result);
+        verify(pointHistoryRepository, times(1)).selectAllByUserId(currentUserId);
     }
 
 

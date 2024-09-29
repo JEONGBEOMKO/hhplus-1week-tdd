@@ -14,15 +14,6 @@ public record UserPoint(
         return new UserPoint(id, 0, System.currentTimeMillis());
     }
 
-    // UserPoint 조회 메서드
-    public static UserPoint findbyId(long id, UserPointRepository userPointRepository){
-        UserPoint userPoint = userPointRepository.findById(id);
-        if (userPoint == null) {
-            throw new IllegalArgumentException("사용자가 조회되지 않습니다.");
-        }
-        return userPoint;
-    }
-
     // 사용자가 포인트를 충전한다.
     public UserPoint charge(final long amount) {
         if (amount <= 0) {
